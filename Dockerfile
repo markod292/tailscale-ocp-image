@@ -1,4 +1,4 @@
-FROM tailscale/k8s-operator:v1.70.0
+FROM tailscale/k8s-operator:v1.84.3
 
 RUN mkdir /.config && \
     chgrp -R 0 /.config && \
