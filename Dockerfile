@@ -1,7 +1,15 @@
-FROM tailscale/k8s-operator:v1.84.3
+FROM checkmk/check-mk-raw:2.2.0-latest
 
-RUN mkdir /.config && \
-    chgrp -R 0 /.config && \
-    chmod -R g=u /.config
+RUN apt-get update && \
+    apt-get install -y curl gnupg2 && \
+    curl -fsSL https://pkgs.tailscale.com/stable/debian/bullseye.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null && \
+    curl -fsSL https://pkgs.tailscale.com/stable/debian/bullseye.list | tee /etc/apt/sources.list.d/tailscale.list >/dev/null && \
+    apt-get update && \
+    apt-get install -y tailscale && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-USER 1001
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+ENTRYPOINT ["/start.sh"]
+
